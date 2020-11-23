@@ -15,28 +15,5 @@
 	        <input type="submit" value="Submit">
 	    </fieldset>
 	</form>
-	<div class="alert alert-success">
-		{% if input_text %}
-			<h4> Classification for: {{ input_text }} </h4>
-	    {% endif %}
-
-		{% if result %}
-			<p> Model predicted: {{ result }} </p>
-	    {% endif %}
-
-	    {% if precent_democrat %}
-	    	<p> Percent democrat: {{ precent_democrat }} </p>
-	    {% endif %}
-
-	    {% if precent_republican %}
-	    	<p> Percent republican: {{ precent_republican }} </p>
-	    {% endif %}
-	</div>
-     <p>
-		<a href="{{ url_for('classify_image') }} " class="btn btn-secondary my-4">Classify Image Page</a>
-		<a href="{{ url_for('images') }} " class="btn btn-secondary my-4">More Images Page</a>
-		<a href="{{ url_for('bootstrap') }} " class="btn btn-secondary my-4">Pretty Boostrap Page</a>
-
-     </p>
   </body>
 </html>

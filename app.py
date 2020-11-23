@@ -6,11 +6,15 @@ import skimage
 
 app = flask.Flask(__name__, template_folder='templates')
 
-path_to_image_classifier = 'models/image-classifier.pkl'
+gender_classifier_path = 'models/gender_model.pkl'
 
-# add our model here
-with open(path_to_image_classifier, 'rb') as f:
-    image_classifier = pickle.load(f)
+# load models here with pickle from models folder, if there is an error, then generate models
+try:
+    file = open(gender_classifier_path, 'rb')
+    gender_classifier = pickle.load(file)
+except IOError:
+    print("Error finding gender classifier model")
+    # recreate model here
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -22,25 +26,21 @@ def main():
         # Get file object from user input.
         file = flask.request.files['file']
 
-        if file: # (if file and face found in picture)
+        if file:
             # Read the image using skimage
             img = skimage.io.imread(file)
-
-            # Resize the image to match the input the model will accept
             img = skimage.transform.resize(img, (28, 28))
-
-            # Flatten the pixels from 28x28 to 784x0
             img = img.flatten()
 
-            # Get prediction of image from classifier
-            predictions = image_classifier.predict([img])
+            # make predictions here
+            # gender =
+            # age =
 
             # Get the value of the prediction
-            prediction = predictions[0]
 
             return flask.render_template('classify_image.html', prediction=str(prediction))
         else:
-            pass # display that there was error getting file or error finding face in picture
+            pass # display that there was error getting file
 
     return flask.render_template('main.html')
 
