@@ -2,17 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>My Web App</title>
+    <title>Age and Gender Predictor</title>
   </head>
   <body>
-    <h1> Image Classifier </h1>
-    <h2>Upload Image Here </h2>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    {% if prediction %}
-    <p> Prediction for input image is: {{ prediction }} </p>
+    <h1> Gender prediction </h1>
+    {% if gender_prediction %}
+      <p> Prediction for input image is: {{ gender_prediction }} </p>
+    <img src="{{ original_image }}">
+      <p> What our model saw </p>
+      <img src="{{ new_image }}">
+    {% else %}
+      <p> Error making prediction, try again </p>
+      <img src="{{ original_image }}">
+      <p> What our model saw </p>
+      <img src="{{ new_image }}">
     {% endif %}
   </body>
 </html>

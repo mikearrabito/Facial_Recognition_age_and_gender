@@ -6,28 +6,47 @@ from tensorflow import keras
 from sklearn import svm
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-
-df = pd.read_csv('data/age_gender_updated.csv')
-
-#df.isnull().sum()
-#df.head()
-
-list_of_pixel_cols = list()
-for i in range(48*48):
-    list_of_pixel_cols.append('pixel' + str(i))
+import reformat_csv
 
 
-X = df[list_of_pixel_cols]  # X is the 48x48 image
-y = df['gender']  # 0 - man, 1 - woman
+try:
+    df = pd.read_csv('data/age_gender_updated.csv')
+except IOError:
+    try:
+        df = pd.read_csv('data/age_gender.csv')
+        print("Original dataset found, reformatting")
+        reformat_csv.pixels_to_columns('data/age_gender.csv')
+    except IOError:
+        print("Error finding age_gender.csv file, unable to create dataframe")
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=45)
-svc_model = svm.SVC()
-svc_model.fit(X_train, y_train)
-accuracy = svc_model.score(X_test, y_test)
-print("Accuracy for SVC: %f" % accuracy)
 
-filepath = 'models/gender_model.pkl'
-pickle.dump(svc_model, open(filepath, 'wb')) # save model to our models folder
+def create_gender_model():
+    list_of_pixel_cols = list()
+    for i in range(48 * 48):
+        list_of_pixel_cols.append('pixel' + str(i))
+
+    if df['pixels']: # if we have pixels column from our original dataset
+        reformat_csv.pixels_to_columns('data/age_gender_updated.csv')
+
+    X = df[list_of_pixel_cols]  # X is the 48x48 image
+    y = df['gender']  # 0 - man, 1 - woman
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=45)
+    svc_model = svm.SVC()
+    svc_model.fit(X_train, y_train)
+    accuracy = svc_model.score(X_test, y_test)
+    print("Accuracy for SVC: %f" % accuracy)
+
+    filepath = 'models/gender_model.pkl'
+    pickle.dump(svc_model, open(filepath, 'wb'))  # save model to our models folder
+    return svc_model
+
+
+def create_age_model():
+    #
+
+    return
+
 
 '''  
 x_train = np.divide(X_train.values.astype(float), 255) #divides all values by 255, so all of our values are now between 0 and 1
