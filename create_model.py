@@ -1,13 +1,12 @@
 import pandas as pd
 import pickle
 import numpy as np
-import tensorflow as tf
-from tensorflow import keras
 from sklearn import svm
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 import reformat_csv
-
+#import tensorflow as tf
+#from tensorflow import keras
 
 try:
     df = pd.read_csv('data/age_gender_updated.csv')

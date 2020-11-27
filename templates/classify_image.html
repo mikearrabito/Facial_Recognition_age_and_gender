@@ -5,17 +5,21 @@
     <title>Age and Gender Predictor</title>
   </head>
   <body>
-    <h1> Gender prediction </h1>
-    {% if gender_prediction %}
-      <p> Prediction for input image is: {{ gender_prediction }} </p>
-    <img src="{{ original_image }}" width="600" height="600">
-      <p> What our model saw </p>
-      <img src="{{ new_image }}" width="600" height="600">
-    {% else %}
-      <p> Error making prediction, try again </p>
-      <img src="{{ original_image }}" width="600" height="600">
-      <p> What our model saw </p>
-      <img src="{{ new_image }}" width="600" height="600">
-    {% endif %}
+  <style>
+
+  </style>
+  <h1> Gender prediction </h1>
+  {% if faces |length > 0 %}
+  <p> Prediction for image is: {{ faces[0].gender }} </p>
+  <p> Original image </p>
+  <img src="{{ original_image }}" alt="Original image" width="400" height="400">
+  <p> Face found in image </p>
+  <img src="{{ faces[0].image_path }}" alt="Face found in image" width="200" height="200">
+  {% else %}
+  <p> No faces found in image, try again </p>
+  <p> Original image </p>
+  <img src="{{ original_image }}" alt="Original image" width="400" height="400">
+  {% endif %}
+
   </body>
 </html>

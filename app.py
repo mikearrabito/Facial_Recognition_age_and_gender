@@ -12,12 +12,11 @@ from create_model import create_gender_model
 
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'uploads')
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'uploads')  # stores uploaded images
+FACES_FOLDER = os.path.join(APP_ROOT, 'static', 'faces')  # stores faces found in image
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app = flask.Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# clear faces and uploads folder here
 
 
 gender_classifier_path = 'models/gender_model.pkl'
@@ -36,6 +35,8 @@ except IOError:
 @app.route('/', methods=['GET', 'POST'])
 def main():
     if flask.request.method == 'GET':
+        # clear faces and uploads folder here
+        face_not_found = False
         return flask.render_template('main.html')
 
     if flask.request.method == 'POST':
@@ -46,15 +47,21 @@ def main():
             filename = secure_filename(file.filename)
             original_image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(original_image_path)  # saving original image before we resize, to display later
-            #print(original_image_path)
+            newpath = ""
+            for char in original_image_path:
+                if char == '\\':
+                    newpath += '/'
+                else:
+                    newpath += char
+            original_image_path = 'static' + newpath.split('static')[1]  # only keep path after 'static'
 
-            images_of_faces = find_faces(original_image_path)  # returns a list of Faces
+            faces = find_faces(original_image_path, FACES_FOLDER)  # returns a list of Faces from image
             gender_prediction = None
             mod_image_path = None
 
-            if len(images_of_faces) > 0:
-                for face in images_of_faces:
-                    img = skimage.io.imread(face.image_path)
+            if len(faces) > 0:
+                for face in faces:
+                    img = skimage.io.imread(face.image_path)  # face that has been cropped from original image
                     img = skimage.color.rgb2gray(img)  # convert to grayscale
                     img = skimage.transform.resize(image=img, output_shape=(48, 48))  # downsize to size of our dataset
                     mod_image_path = (os.path.splitext(original_image_path)[0] + '_downscaled'
@@ -66,36 +73,29 @@ def main():
 
                     gender_prediction = gender_classifier.predict([img])
                     if gender_prediction[0] == 0:
-                        gender_prediction = 'Male'
+                        face.gender = 'Male'
                     elif gender_prediction[0] == 1:
-                        gender_prediction = 'Female'
+                        face.gender = 'Female'
                     else:
-                        gender_prediction = None  # error
+                        face.gender = None  # error
 
 
                     # age =
 
                     newpath = ""
-                    for char in original_image_path:
+                    for char in face.image_path:
                         if char == '\\':
                             newpath += '/'
                         else:
                             newpath += char
-                    original_image_path = 'static' + newpath.split('static')[1]  # only keep path after 'static'
-                    newpath = ""
-                    for char in mod_image_path:
-                        if char == '\\':
-                            newpath += '/'
-                        else:
-                            newpath += char
-                    mod_image_path = 'static' + newpath.split('static')[1]  # only keep path after 'static'
+                    face_found = 'static' + newpath.split('static')[1]  # only keep path after 'static'
+                    face.image_path = face_found  # easier format to print in our html page
 
-                    break  #  remove this
+                return flask.render_template('classify_image.html', faces=faces, original_image=original_image_path)
 
-            return flask.render_template('classify_image.html', gender_prediction=gender_prediction,
-                                         original_image=original_image_path, new_image=mod_image_path)
-        else:
-            pass  # display that there was error getting file
+            else:
+                # file uploaded, but no face found in image
+                return flask.render_template('main.html', face_not_found=True)
 
     return flask.render_template('main.html')
 
@@ -103,6 +103,7 @@ def main():
 @app.route('/classify_image/', methods=['GET', 'POST'])
 def classify_image():
     # results page
+    # add a return to main page button
     return flask.render_template('classify_image.html')
 
 
