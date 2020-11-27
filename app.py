@@ -57,7 +57,6 @@ def main():
 
             faces = find_faces(original_image_path, FACES_FOLDER)  # returns a list of Faces from image
             gender_prediction = None
-            mod_image_path = None
 
             if len(faces) > 0:
                 for face in faces:
@@ -79,8 +78,7 @@ def main():
                     else:
                         face.gender = None  # error
 
-
-                    # age =
+                    # face.age =
 
                     newpath = ""
                     for char in face.image_path:

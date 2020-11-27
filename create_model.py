@@ -24,8 +24,8 @@ def create_gender_model():
     for i in range(48 * 48):
         list_of_pixel_cols.append('pixel' + str(i))
 
-    if df['pixels']: # if we have pixels column from our original dataset
-        reformat_csv.pixels_to_columns('data/age_gender_updated.csv')
+    if 'pixels' in df.columns:  # if we have pixels column from our original dataset
+        reformat_csv.pixels_to_columns('data/age_gender.csv')
 
     X = df[list_of_pixel_cols]  # X is the 48x48 image
     y = df['gender']  # 0 - man, 1 - woman
