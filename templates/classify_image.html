@@ -8,14 +8,14 @@
     <h1> Gender prediction </h1>
     {% if gender_prediction %}
       <p> Prediction for input image is: {{ gender_prediction }} </p>
-    <img src="{{ original_image }}">
+    <img src="{{ original_image }}" width="600" height="600">
       <p> What our model saw </p>
-      <img src="{{ new_image }}">
+      <img src="{{ new_image }}" width="600" height="600">
     {% else %}
       <p> Error making prediction, try again </p>
-      <img src="{{ original_image }}">
+      <img src="{{ original_image }}" width="600" height="600">
       <p> What our model saw </p>
-      <img src="{{ new_image }}">
+      <img src="{{ new_image }}" width="600" height="600">
     {% endif %}
   </body>
 </html>
