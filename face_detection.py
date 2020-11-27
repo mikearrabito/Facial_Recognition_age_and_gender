@@ -29,7 +29,6 @@ def find_faces(image_path, faces_folder):
     im = Image.open(image_path)
     faces = list()
     filename = os.path.basename(image_path)
-    print(filename)
     file_extension = os.path.splitext(image_path)[1]
     i = 1
     for (x, y, w, h) in face_coords:
