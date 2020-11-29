@@ -7,6 +7,7 @@ import skimage
 from skimage import io, color
 from skimage.transform import rescale, resize, downscale_local_mean
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 from face_detection import Face, find_faces
 from create_model import create_gender_model
 
@@ -17,7 +18,6 @@ FACES_FOLDER = os.path.join(APP_ROOT, 'static', 'faces')  # stores faces found i
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app = flask.Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 gender_classifier_path = 'models/gender_model.pkl'
 
@@ -40,11 +40,19 @@ def main():
         return flask.render_template('main.html')
 
     if flask.request.method == 'POST':
-        # Get file object from user input.
-        file = flask.request.files['file']
+        sample_image = flask.request.args.get('sample_image')
+        filename = None
+        if sample_image:
+            file = open(os.path.join(APP_ROOT, 'static', sample_image), "rb")
+            # wrap file in werkzeug filestorage class to be compatible with our code below
+            file = FileStorage(file, content_type=('image/' + str(sample_image.split('.')[1])))
+            filename = secure_filename(file.filename)
+            filename = filename.split('static_')[1]
+        else:
+            file = flask.request.files['file']
+            filename = secure_filename(file.filename)
 
         if file:
-            filename = secure_filename(file.filename)
             original_image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(original_image_path)  # saving original image before we resize, to display later
             newpath = ""
@@ -98,10 +106,9 @@ def main():
     return flask.render_template('main.html')
 
 
-@app.route('/classify_image/', methods=['GET', 'POST'])
+@app.route('/classify_image', methods=['GET', 'POST'])
 def classify_image():
-    # results page
-    # add a return to main page button
+
     return flask.render_template('classify_image.html')
 
 

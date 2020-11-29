@@ -3,25 +3,14 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}" type="text/css">
     <title>Age and Gender Predictor</title>
   </head>
   <body>
-  <style>
-	h1{
-	text-align: center;
-	}
-	p{
-	text-align: center;
-	}
-	img{
-	display: block;
-    margin-left: auto;
-    margin-right: auto;
-	}
-  </style>
-  <h1> Gender prediction </h1>
+  <h1> Results </h1>
   {% if faces |length > 0 %}
-  <p> Prediction for image is: {{ faces[0].gender }} </p>
+  <p> Gender predicted: {{ faces[0].gender }} </p>
+  <p> Age predicted: {{ faces[0].age }} </p>
   <p> Original image </p>
   <img src="{{ original_image }}" alt="Original image" width="400" height="400">
   <p> Face found in image </p>
@@ -31,6 +20,13 @@
   <p> Original image </p>
   <img src="{{ original_image }}" alt="Original image" width="400" height="400">
   {% endif %}
+
+  <div class="center">
+    <a href="/">
+      <button type="button" class="btn btn-primary btn-lg">Return to main page</button>
+    </a>
+
+  </div>
 
   </body>
 </html>

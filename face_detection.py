@@ -24,8 +24,6 @@ def find_faces(image_path, faces_folder):
 
     face_coords = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5)
 
-    # face_coords has x,y,w,h for each face
-    # need to extract face from x,y to x+w,y+h for each face and create an instance of Face
     im = Image.open(image_path)
     faces = list()
     filename = os.path.basename(image_path)
@@ -35,7 +33,6 @@ def find_faces(image_path, faces_folder):
         image_of_face = im.crop((x, y, x+w, y+h))  # image of face extracted from image
         image_of_face_path = faces_folder + str('\\' + filename + '_face_' + str(i) + file_extension)
         i += 1
-        print(image_of_face_path)
         image_of_face.save(image_of_face_path)
         faces.append(Face(image_of_face_path))
 

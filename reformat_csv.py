@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
 
-# this files purpose is to reformat the original csv with pixel column being a string of ints to
-# individual columns for each pixel and removing columns we do not need
-
-
+"""
+Takes a path to csv file, expects pixel column as a string of ints separated by spaces,
+creates new dataframe with each pixel in its own column and saves it as filename_updated.csv
+"""
 def pixels_to_columns(path):
     if len(path) < 5 or path[-4:] != '.csv':
         print("CSV file expected, invalid file detected")
@@ -24,10 +24,9 @@ def pixels_to_columns(path):
     pixels_df = pixels_df.drop('pixels', axis=1)  # get rid of original pixels column
     # print(pixels_df)
 
-    df2 = pd.DataFrame(df)
-    df2 = pd.concat([df2, pixels_df], axis=1, join='outer')  # concat with original df
-    df2 = df2.drop(['pixels', 'img_name'], axis=1)  # drop columns that are not needed
-    print(df2)
+    df = pd.concat([df, pixels_df], axis=1, join='outer')  # concat with original df
+    df = df.drop(['pixels', 'img_name'], axis=1)  # drop columns that are not needed
+    # print(df)
 
-    df2.to_csv((path - '.csv') + '_updated.csv')  # save our modified csv file
+    df.to_csv((path - '.csv') + '_updated.csv')  # save our modified csv file
     return
