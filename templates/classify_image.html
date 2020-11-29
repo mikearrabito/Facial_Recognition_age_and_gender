@@ -9,16 +9,19 @@
   <body>
   <h1> Results </h1>
   {% if faces |length > 0 %}
-  <p> Gender predicted: {{ faces[0].gender }} </p>
-  <p> Age predicted: {{ faces[0].age }} </p>
   <p> Original image </p>
   <img src="{{ original_image }}" alt="Original image" width="400" height="400">
-  <p> Face found in image </p>
-  <img src="{{ faces[0].image_path }}" alt="Face found in image" width="200" height="200">
+
+  {% for face in faces %}
+    <img src="{{ face.image_path }}" alt="Face found in image" width="200" height="200">
+    <p> Gender predicted: {{ face.gender }} </p>
+    <p> Age predicted: {{ face.age }} </p>
+  {% endfor %}
+
   {% else %}
-  <p> No faces found in image, try again </p>
-  <p> Original image </p>
-  <img src="{{ original_image }}" alt="Original image" width="400" height="400">
+    <p> No faces found in image, try again </p>
+    <p> Original image </p>
+    <img src="{{ original_image }}" alt="Original image" width="400" height="400">
   {% endif %}
 
   <div class="center">
