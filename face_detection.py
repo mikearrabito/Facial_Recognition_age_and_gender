@@ -6,8 +6,7 @@ from PIL import Image
 class Face:
     image_path = ""
     age = None
-    gender = ""
-    is_wearing_mask = None
+    gender = None
 
     def __init__(self, image_path):
         self.image_path = image_path
