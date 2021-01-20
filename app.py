@@ -64,13 +64,11 @@ def main():
         if file:
             original_image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(original_image_path)  # saving original image before we resize, to display later
-            newpath = ""
-            for char in original_image_path:
-                if char == '\\':
-                    newpath += '/'
-                else:
-                    newpath += char
-            original_image_path = 'static' + newpath.split('static')[1]  # only keep path after 'static'
+
+            if os.name == 'nt':
+                original_image_path = original_image_path.replace("\\", "/")
+
+            original_image_path = 'static' + original_image_path.split('static')[1]  # only keep path after 'static'
 
             faces = find_faces(original_image_path, FACES_FOLDER)  # returns a list of Faces from image
             gender_prediction = None
@@ -102,13 +100,9 @@ def main():
                     #age_pred = tf.argmax(age_pred, axis=-1)
                     face.age = create_model.get_age_range(age_pred)
 
+                    if os.name == 'nt':
+                        face.image_path = face.image_path.replace("\\", "/")
 
-                    newpath = ""
-                    for char in face.image_path:
-                        if char == '\\':
-                            newpath += '/'
-                        else:
-                            newpath += char
                     face_found = 'static' + newpath.split('static')[1]  # only keep path after 'static'
                     face.image_path = face_found  # easier format to print in our html page
 
@@ -128,4 +122,4 @@ def classify_image():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
